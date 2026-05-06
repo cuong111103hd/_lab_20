@@ -66,3 +66,26 @@ Dựa trên dữ liệu thực tế thu thập được từ lượt chạy gầ
 
 ---
 
+## 8. Phân tích Failure Modes và Giải pháp khắc phục
+
+Trong quá trình phát triển và chạy benchmark, chúng tôi xác định được một số lỗi tiềm tàng (Failure Modes) và đã triển khai các giải pháp khắc phục:
+
+### 1. Vòng lặp vô hạn (Infinite Routing Loop)
+- **Vấn đề:** Supervisor có thể bị quẩn giữa hai agent (ví dụ: Researcher tìm chưa đủ, Analyst yêu cầu tìm lại) dẫn đến cạn kiệt token.
+- **Cách fix:** Thiết lập `max_iterations` trong `ResearchState`. Khi đạt đến giới hạn (ví dụ: 7-10 iterations), hệ thống tự động ép buộc Writer tổng hợp câu trả lời từ dữ liệu hiện có hoặc trả về lỗi rõ ràng thay vì chạy tiếp.
+
+### 2. Ảo giác của LLM (Hallucination)
+- **Vấn đề:** Agent có thể tự đưa ra các thông tin không có trong kết quả tìm kiếm của Tavily.
+- **Cách fix:** Triển khai **Critic Agent**. Agent này không tham gia vào việc tạo nội dung mà chỉ đóng vai trò "thẩm định viên", đối chiếu `Final Answer` với `Research Notes`. Nếu phát hiện sai lệch, Critic sẽ yêu cầu `REVISE`.
+
+### 3. Trôi ngữ cảnh (Context Drift)
+- **Vấn đề:** Qua nhiều bước truyền tin giữa các agent, yêu cầu ban đầu của người dùng có thể bị hiểu sai hoặc bị lược bỏ các chi tiết quan trọng.
+- **Cách fix:** Luôn đính kèm `ResearchQuery` gốc vào Shared State và yêu cầu các agent (đặc biệt là Writer) phải kiểm tra lại yêu cầu gốc trước khi xuất dữ liệu.
+
+### 4. Lỗi Search API (Tavily Rate Limit)
+- **Vấn đề:** Khi query quá nhiều hoặc gặp sự cố mạng, bước Researcher có thể bị fail.
+- **Cách fix:** Sử dụng cơ chế **Retry với Exponential Backoff** (thử lại với thời gian chờ tăng dần) trong service layer và cung cấp fallback data nếu cần thiết.
+
+---
+*Báo cáo được hoàn thiện bởi Antigravity AI Engineer.*
+
