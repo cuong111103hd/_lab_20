@@ -29,7 +29,9 @@ class AgentResult(BaseModel):
 class SourceDocument(BaseModel):
     title: str
     url: str | None = None
-    snippet: str
+    snippet: str | None = None
+    content: str | None = None
+    relevance_score: float = 0.0
     metadata: dict[str, Any] = Field(default_factory=dict)
 
 

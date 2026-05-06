@@ -26,6 +26,15 @@ class ResearchState(BaseModel):
     trace: list[dict[str, Any]] = Field(default_factory=list)
     errors: list[str] = Field(default_factory=list)
 
+    prompt_tokens: int = 0
+    completion_tokens: int = 0
+
+    def add_tokens(self, prompt: int | None, completion: int | None) -> None:
+        if prompt:
+            self.prompt_tokens += prompt
+        if completion:
+            self.completion_tokens += completion
+
     def record_route(self, route: str) -> None:
         self.route_history.append(route)
         self.iteration += 1

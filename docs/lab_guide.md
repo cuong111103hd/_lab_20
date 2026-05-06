@@ -74,4 +74,7 @@ Benchmark tối thiểu:
 Mỗi nhóm trả lời 2 câu:
 
 1. Case nào nên dùng multi-agent? Vì sao?
+   - Nên dùng cho các tác vụ phức tạp đòi hỏi nhiều bước (tìm kiếm, phân tích, đối chiếu, viết lách) và cần tính chuyên môn hóa cao. Multi-agent giúp chia nhỏ trách nhiệm, dễ debug từng phần và cho phép các agents "kiểm tra" chéo lẫn nhau (ví dụ Analyst kiểm tra Researcher).
+
 2. Case nào không nên dùng multi-agent? Vì sao?
+   - Không nên dùng cho các tác vụ đơn giản, đòi hỏi tốc độ phản hồi nhanh (latency thấp) hoặc các tác vụ có ngân sách hạn chế. Việc điều phối (orchestration) tiêu tốn nhiều thời gian và chi phí token hơn đáng kể so với single-agent call.
