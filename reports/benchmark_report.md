@@ -6,8 +6,8 @@ Báo cáo này so sánh hiệu năng giữa hệ thống Baseline (Single-Agent)
 
 | Tên lượt chạy | Thời gian (s) | Chi phí ước tính (USD) | Ghi chú |
 |---|---:|---:|---|
-| Baseline | 10.83 | $0.00064 | Sources found: 3, Iterations: 0 |
-| Multi-Agent | 41.81 | $0.00213 | Sources found: 5, Iterations: 4 |
+| Baseline | 20.10 | $0.00061 | Sources found: 3, Iterations: 0 |
+| Multi-Agent | 79.14 | $0.00332 | Sources found: 5, Iterations: 7 |
 
 ## Phân tích kết quả
 - **Thời gian (Latency):** Multi-agent thường chậm hơn do có nhiều bước điều phối và gọi LLM nhiều lần.

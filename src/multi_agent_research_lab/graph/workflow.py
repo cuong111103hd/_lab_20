@@ -11,6 +11,14 @@ from multi_agent_research_lab.agents.analyst import AnalystAgent
 from multi_agent_research_lab.agents.writer import WriterAgent
 
 
+from langgraph.graph import StateGraph, END
+from multi_agent_research_lab.agents.supervisor import SupervisorAgent
+from multi_agent_research_lab.agents.researcher import ResearcherAgent
+from multi_agent_research_lab.agents.analyst import AnalystAgent
+from multi_agent_research_lab.agents.writer import WriterAgent
+from multi_agent_research_lab.agents.critic import CriticAgent
+
+
 class MultiAgentWorkflow:
     """Xây dựng và chạy đồ thị multi-agent."""
 
@@ -19,6 +27,7 @@ class MultiAgentWorkflow:
         self.researcher = ResearcherAgent()
         self.analyst = AnalystAgent()
         self.writer = WriterAgent()
+        self.critic = CriticAgent()
 
     def build(self) -> StateGraph:
         """Tạo đồ thị LangGraph."""
@@ -30,6 +39,7 @@ class MultiAgentWorkflow:
         builder.add_node("researcher", self.researcher.run)
         builder.add_node("analyst", self.analyst.run)
         builder.add_node("writer", self.writer.run)
+        builder.add_node("critic", self.critic.run)
         
         # Thiết lập điểm bắt đầu
         builder.set_entry_point("supervisor")
@@ -42,6 +52,9 @@ class MultiAgentWorkflow:
                 "RESEARCHER": "researcher",
                 "ANALYST": "analyst",
                 "WRITER": "writer",
+                "CRITIC": "critic",
+                "REVISE": "analyst", # Nếu critic bảo REVISE, supervisor có thể đưa về analyst
+                "APPROVED": END,     # Nếu critic bảo APPROVED, kết thúc qua supervisor
                 "FINISH": END
             }
         )
@@ -50,6 +63,7 @@ class MultiAgentWorkflow:
         builder.add_edge("researcher", "supervisor")
         builder.add_edge("analyst", "supervisor")
         builder.add_edge("writer", "supervisor")
+        builder.add_edge("critic", "supervisor")
         
         return builder.compile()
 
